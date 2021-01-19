@@ -22,23 +22,23 @@ Registration endpoint: create a new user (Sign Up) This endpoint expects a name 
 # POST /sessions
 Login endpoint: login for already existing users This endpoint expects a username and password in the client's POST request in order to authenticate an already existing User.
 
-# POST /baby-profiles/new-baby-profile/:userId
+# POST /profiles/new-profile/:userId
 Endpoint to create a new Baby Profile.
 Restricted endpoint: only available after a user has successfully signed up. The user's ID must be included in the POST request URL. In order for it to be validated, this endpoint expects the user's valid access token included in the POST request's Authorization header.
 The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, weight and length values.
 
-# POST /daily-entries/new-daily-entry/:userId
+# POST /entries/new-entry/:userId
 Endpoint to create a new Daily Entry
 This endpoint is also restricted, follow instructions explained above.
 The user's ID must be included in the POST request URL.
 The POST request done in the Frontend must include in the body: dailyActivities, dailyWeight and dailyReflection values.
 
-# GET /daily-entries/:userId/latest
+# GET /entries/:userId/latest
 
 ** WRITE DESCRIPTION FOR THIS ENDPOINT **
 Endpoint to show the last 5 daily entries for a specific baby.
 
-# GET /baby-profiles/baby/:userId
+# GET /profiles/:userId
 
 ** WRITE DESCRIPTION FOR THIS ENDPOINT **
 Endpoint to show the baby details (BabyProfile data) for a specific baby.
