@@ -74,6 +74,10 @@ const BabyProfile = mongoose.model('BabyProfile', {
     type: Number,
     required: true
   },
+  sex: { 
+    type: String,
+    required:true
+  },
   weight: {
     type: Number,
     required: true
@@ -178,13 +182,13 @@ app.post('/sessions', async (req, res) => {
 // RESTRICTED ENDPOINT: only accesible after user has signed up successfully
 // The user's access token must be included in the POST request's 
 // Authorization header done in the Frontend
-// The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, weight, length
+// The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, sex, weight, length
 app.post('/profiles/new-profile/:userId', authenticateUser);
 app.post('/profiles/new-profile/:userId', async (req,res) => {
   const userId = req.params.userId;
-  const { babyName, dateOfBirth, timeOfBirth, gestationalAge, weight, length } = req.body;
+  const { babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length } = req.body;
 
-  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, gestationalAge, weight, length });
+  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length });
 
   try {
     const savedBabyProfile = await babyProfile.save();
@@ -222,6 +226,7 @@ app.post('/entries/new-entry/:userId', async (req,res) => {
 // GET: Endpoint to show the last 5 daily entries for a specific baby
 // The path includes the user ID, so we can do a search for the latest 5 daily entries
 // by that specific user ID
+// Restricted endpoint: Make sure user's accessToken is included in Authorization header
 app.get('/entries/:userId/latest', authenticateUser);
 app.get('/entries/:userId/latest', async (req,res) => { 
   const userId = req.params.userId; 
@@ -237,6 +242,7 @@ app.get('/entries/:userId/latest', async (req,res) => {
 // GET: endpoint to show baby profile details for a specific baby
 // The path includes the user ID so we can do a search for the BabyProfile
 // entry having that specific user ID
+// Restricted endpoint: Make sure user's accessToken is included in Authorization header
 app.get('/profiles/:userId', authenticateUser);
 app.get('/profiles/:userId', async (req,res) => { 
   const userId = req.params.userId; 
@@ -246,6 +252,18 @@ app.get('/profiles/:userId', async (req,res) => {
     res.json(profile);
   } catch (err) { 
     res.status(500).json(err);
+  };
+});
+
+// DELETE: Endpoint to delete a specific entry on the database. It takes the ID from the entry that the 
+// user wants to remove
+app.delete('/entries/:entryId', authenticateUser);
+app.delete('/entries/:entryId', async (req, res) => {
+  try { 
+    await DailyEntry.deleteOne({ _id: req.params.entryId });
+    res.status(200).json({ success: "Entry deleted!" });
+  } catch (error) {
+    res.status(400).json({ message:"Could not delete entry" });
   };
 });
 
