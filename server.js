@@ -7,7 +7,7 @@ import bcrypt from 'bcrypt';
 import listEndpoints from 'express-list-endpoints';
 
 // Set up MongoDB
-const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/final-PRACTICE';
+const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/time-capsule';
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = Promise;
 
@@ -87,8 +87,7 @@ const BabyProfile = mongoose.model('BabyProfile', {
 // DailyEntry Model
 const DailyEntry = mongoose.model('DailyEntry', {
   entryBy: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
+    type: String,
     unique: false
   },
   createdAt: {
@@ -208,7 +207,7 @@ app.post('/entries/new-entry/:userId', async (req,res) => {
 
   const { dailyActivities, dailyWeight, dailyReflection } = req.body;
 
-  const dailyEntry = new DailyEntry({ entryBy: mongoose.Types.ObjectId(userId), dailyActivities, dailyWeight, dailyReflection });
+  const dailyEntry = new DailyEntry({ entryBy: userId, dailyActivities, dailyWeight, dailyReflection });
 
   try {
     const savedDailyEntry = await dailyEntry.save();
@@ -226,6 +225,17 @@ app.post('/entries/new-entry/:userId', async (req,res) => {
 // The path includes the user ID, so we can do a search for the latest 5 daily entries
 // by that specific user ID
 // use desc() so it shows latest entries and also limit(5) so it shows only 5
+app.get('/entries/:userId/latest', authenticateUser);
+app.get('/entries/:userId/latest', async (req,res) => { 
+  const userId = req.params.userId; 
+
+  try { 
+    const entries = await DailyEntry.find({ entryBy: userId }).sort({ createdAt: 'desc' }).limit(5).exec();
+    res.json(entries);
+  } catch (err) { 
+    res.status(500).json(err);
+  };
+});
 
 // MISSING endpoint:
 // GET: endpoint to show baby profile details for a specific baby
