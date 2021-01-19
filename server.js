@@ -72,6 +72,8 @@ const BabyProfile = mongoose.model('BabyProfile', {
   },
   gestationalAge: {
     type: Number,
+    min: 23,
+    max: 43,
     required: true
   },
   sex: { 
@@ -80,10 +82,13 @@ const BabyProfile = mongoose.model('BabyProfile', {
   },
   weight: {
     type: Number,
+    min: 500,
     required: true
   },
   length: {
     type: Number,
+    min: 10,
+    max: 200,
     required: true
   }
 });
@@ -109,7 +114,7 @@ const DailyEntry = mongoose.model('DailyEntry', {
   dailyReflection: {
     type: String,
     required: true,
-    minLength: 15,
+    minLength: 5,
     maxLength: 300
   }
 });
