@@ -34,14 +34,18 @@ The user's ID must be included in the POST request URL.
 The POST request done in the Frontend must include in the body: dailyActivities, dailyWeight and dailyReflection values.
 
 # GET /entries/:userId/latest
-
-** WRITE DESCRIPTION FOR THIS ENDPOINT **
 Endpoint to show the last 5 daily entries for a specific baby.
+Restricted endpoint, follow the instructions explained above.
+We use the userID to get the latest 5 daily entries for that specific user.
 
 # GET /profiles/:userId
-
-** WRITE DESCRIPTION FOR THIS ENDPOINT **
 Endpoint to show the baby details (BabyProfile data) for a specific baby.
+Restricted endpoint, follow the instructions explained above.
+
+# DELETE /entries/:entryId
+Endpoint to delete a specific entry.
+Restricted endpoint, follow the instructions explained above.
+It takes the ID from the entry the user wants to delete and removes it from the database.
 
 ## View it Live
 
