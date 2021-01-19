@@ -219,12 +219,9 @@ app.post('/entries/new-entry/:userId', async (req,res) => {
   };
 });
 
-// MISSING endpoint:
 // GET: Endpoint to show the last 5 daily entries for a specific baby
-// Example path: /daily-entries/:userId/latest
 // The path includes the user ID, so we can do a search for the latest 5 daily entries
 // by that specific user ID
-// use desc() so it shows latest entries and also limit(5) so it shows only 5
 app.get('/entries/:userId/latest', authenticateUser);
 app.get('/entries/:userId/latest', async (req,res) => { 
   const userId = req.params.userId; 
@@ -237,11 +234,20 @@ app.get('/entries/:userId/latest', async (req,res) => {
   };
 });
 
-// MISSING endpoint:
 // GET: endpoint to show baby profile details for a specific baby
-// Example path: /baby-profiles/baby/:userId
 // The path includes the user ID so we can do a search for the BabyProfile
 // entry having that specific user ID
+app.get('/profiles/:userId', authenticateUser);
+app.get('/profiles/:userId', async (req,res) => { 
+  const userId = req.params.userId; 
+
+  try { 
+    const profile = await BabyProfile.findOne({ userId });
+    res.json(profile);
+  } catch (err) { 
+    res.status(500).json(err);
+  };
+});
 
 // Start the server
 app.listen(port, () => {
