@@ -1,52 +1,43 @@
 # Architecture for this API
 
-For our Baby Time Capsule Project we are working with a RESTful API built with Express on Node.js. We are storing our data in a Mongo Database.
-Server deployed to Heroku and MongoDB store in the cloud in Atlas.
+For our _Time Capsule_ Project we are working with a __RESTful API__ built with _Express_ on _Node.js_. We are storing our data in a Mongo Database.
+Server deployed to _Heroku_ and _MongoDB_ store in the cloud in _Atlas_.
 
-We work with 3 main collections in our database: User, BabyProfile and DailyEntry.
+We work with 3 main collections in our database: __User__, __BabyProfile__ and __DailyEntry__.
 We have connected the collections by creating a relation to the User model, so for example each DailyEntry entry includes an entryBy property, which lists
 the ID of the user who authored this entry.
 
 We have implemented validation where possible on each of our models, in order to control that the data stored in our database is clean and proper.
+Project developed by Sofia Vaz Sousa & Vanessa Sue Smith
 
 ## CORE ROUTES - Documentation
-
-# Base URL: include here URL for deployed Heroku app
-
+Restricted endpoints, these should can only be accessed after they have signed up or logged in. In order for it to be validated, these endpoints expect the user's valid access token included in the POST request's authorization header.
+# Base URL
+[Time Capsule API](https://time-capsule-final.herokuapp.com/)
 # GET /
-Home Page, shows a list of our endpoints.
+Home Page, shows a list of the endpoints.
+
+# GET /entries/latest
+_Restricted endpoint_: Endpoint to show the last 5 daily entries for a specific baby.
+
+# GET /profiles
+_Restricted endpoint_: Endpoint to show the baby details (BabyProfile data) for a specific baby.
 
 # POST /users
-Registration endpoint: create a new user (Sign Up) This endpoint expects a name and password in the client's POST request body in order to create a new User in the database.
+_Registration endpoint_: creates a new user (Sign Up) This endpoint expects a name and password in the client's POST request body in order to create a new User in the database.
 
 # POST /sessions
-Login endpoint: login for already existing users This endpoint expects a username and password in the client's POST request in order to authenticate an already existing User.
+_Login endpoint_: login for an already existing user. This endpoint expects a username and password in the client's POST request in order to authenticate an already existing User.
 
-# POST /profiles/new-profile/:userId
-Endpoint to create a new Baby Profile.
-Restricted endpoint: only available after a user has successfully signed up. The user's ID must be included in the POST request URL. In order for it to be validated, this endpoint expects the user's valid access token included in the POST request's Authorization header.
-The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, weight and length values.
+# POST /profiles
+_Restricted endpoint_: Endpoint to create a new Baby Profile.
+The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, sex, weight and length values.
 
-# POST /entries/new-entry/:userId
-Endpoint to create a new Daily Entry
-This endpoint is also restricted, follow instructions explained above.
-The user's ID must be included in the POST request URL.
+# POST /entries
+_Restricted endpoint_: Endpoint to create a new Daily Entry.
 The POST request done in the Frontend must include in the body: dailyActivities, dailyWeight and dailyReflection values.
 
-# GET /entries/:userId/latest
-Endpoint to show the last 5 daily entries for a specific baby.
-Restricted endpoint, follow the instructions explained above.
-We use the userID to get the latest 5 daily entries for that specific user.
-
-# GET /profiles/:userId
-Endpoint to show the baby details (BabyProfile data) for a specific baby.
-Restricted endpoint, follow the instructions explained above.
-
 # DELETE /entries/:entryId
-Endpoint to delete a specific entry.
-Restricted endpoint, follow the instructions explained above.
+_Restricted endpoint_: Endpoint to delete a specific entry.
 It takes the ID from the entry the user wants to delete and removes it from the database.
 
-## View it Live
-
-Link to deployed serve in Heroku.

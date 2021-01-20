@@ -73,12 +73,12 @@ const BabyProfile = mongoose.model('BabyProfile', {
   gestationalAge: {
     type: Number,
     min: 23,
-    max: 43,
+    max: 50,
     required: true
   },
   sex: { 
     type: String,
-    required:true
+    required: true
   },
   weight: {
     type: Number,
@@ -113,7 +113,6 @@ const DailyEntry = mongoose.model('DailyEntry', {
   },
   dailyReflection: {
     type: String,
-    required: true,
     minLength: 5,
     maxLength: 300
   }
@@ -179,7 +178,7 @@ app.post('/sessions', async (req, res) => {
       res.status(404).json({ notFound: true, message: 'Verify username and password is correct' });
     }
   } catch (err) {
-    res.status(404).json({ notFound: true, message: 'Verify username and password is correct' });
+    res.status(500).json({ notFound: true, message: 'Internal Server Error' });
   }
 });
 
@@ -188,9 +187,9 @@ app.post('/sessions', async (req, res) => {
 // The user's access token must be included in the POST request's 
 // Authorization header done in the Frontend
 // The POST request done in the Frontend must include in the body: babyName, dateOfBirth, timeOfBirth, gestationalAge, sex, weight, length
-app.post('/profiles/new-profile/:userId', authenticateUser);
-app.post('/profiles/new-profile/:userId', async (req,res) => {
-  const userId = req.params.userId;
+app.post('/profiles', authenticateUser);
+app.post('/profiles', async (req,res) => {
+  const userId = req.user.id;
   const { babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length } = req.body;
 
   const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length });
@@ -210,9 +209,9 @@ app.post('/profiles/new-profile/:userId', async (req,res) => {
 // The user's access token must be included in the POST request's 
 // Authorization header done in the Frontend
 // The POST request done in the Frontend must include in the body: dailyActivities, dailyWeight, dailyReflection
-app.post('/entries/new-entry/:userId', authenticateUser);
-app.post('/entries/new-entry/:userId', async (req,res) => {
-  const userId = req.params.userId;
+app.post('/entries', authenticateUser);
+app.post('/entries', async (req,res) => {
+  const userId = req.user.id;
 
   const { dailyActivities, dailyWeight, dailyReflection } = req.body;
 
@@ -232,9 +231,9 @@ app.post('/entries/new-entry/:userId', async (req,res) => {
 // The path includes the user ID, so we can do a search for the latest 5 daily entries
 // by that specific user ID
 // Restricted endpoint: Make sure user's accessToken is included in Authorization header
-app.get('/entries/:userId/latest', authenticateUser);
-app.get('/entries/:userId/latest', async (req,res) => { 
-  const userId = req.params.userId; 
+app.get('/entries/latest', authenticateUser);
+app.get('/entries/latest', async (req,res) => { 
+  const userId = req.user.id; 
 
   try { 
     const entries = await DailyEntry.find({ entryBy: userId }).sort({ createdAt: 'desc' }).limit(5).exec();
@@ -248,9 +247,9 @@ app.get('/entries/:userId/latest', async (req,res) => {
 // The path includes the user ID so we can do a search for the BabyProfile
 // entry having that specific user ID
 // Restricted endpoint: Make sure user's accessToken is included in Authorization header
-app.get('/profiles/:userId', authenticateUser);
-app.get('/profiles/:userId', async (req,res) => { 
-  const userId = req.params.userId; 
+app.get('/profiles', authenticateUser);
+app.get('/profiles', async (req,res) => { 
+  const userId = req.user.id; 
 
   try { 
     const profile = await BabyProfile.findOne({ userId });
@@ -268,7 +267,7 @@ app.delete('/entries/:entryId', async (req, res) => {
     await DailyEntry.deleteOne({ _id: req.params.entryId });
     res.status(200).json({ success: "Entry deleted!" });
   } catch (error) {
-    res.status(400).json({ message:"Could not delete entry" });
+    res.status(500).json({ message:"Could not delete entry" });
   };
 });
 
