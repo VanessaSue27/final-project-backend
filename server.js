@@ -109,6 +109,7 @@ const DailyEntry = mongoose.model('DailyEntry', {
   },
   dailyWeight: {
     type: Number,
+    min: 500,
     required: true
   },
   dailyReflection: {
