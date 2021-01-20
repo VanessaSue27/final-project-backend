@@ -13,7 +13,7 @@ Project developed by Sofia Vaz Sousa & Vanessa Sue Smith
 ## CORE ROUTES - Documentation
 Restricted endpoints, these should can only be accessed after they have signed up or logged in. In order for it to be validated, these endpoints expect the user's valid access token included in the POST request's authorization header.
 # Base URL
-[Time Capsule API](https://time-capsule-final.herokuapp.com/)
+https://time-capsule-final.herokuapp.com/
 # GET /
 Home Page, shows a list of the endpoints.
 

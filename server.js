@@ -113,7 +113,6 @@ const DailyEntry = mongoose.model('DailyEntry', {
   },
   dailyReflection: {
     type: String,
-    minLength: 5,
     maxLength: 300
   }
 });
