@@ -196,9 +196,7 @@ app.post('/profiles', async (req,res) => {
 
   try {
     const savedBabyProfile = await babyProfile.save();
-
-    // if saved successfully to the database, we send the whole baby profile back as a response so it can be used in the Frontend
-    res.status(200).json(savedBabyProfile);
+    res.status(200).json({ message: "Baby profile saved successfully." });
   } catch (error) {
     res.status(400).json({ message: "Could not save BabyProfile to the database", error });
   };
