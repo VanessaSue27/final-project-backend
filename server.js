@@ -78,7 +78,8 @@ const BabyProfile = mongoose.model('BabyProfile', {
   },
   sex: { 
     type: String,
-    required: true
+    required: true,
+    enum: ['Female', 'Male', 'Not Disclosed'],
   },
   weight: {
     type: Number,
