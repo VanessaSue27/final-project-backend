@@ -159,7 +159,7 @@ app.post('/users', async (req, res) => {
     const user = await new User({ name, password }).save();
 
     // if the user was saved successfully, the response will include the newly saved user's ID and their access token
-    res.status(201).json({ userId: user._id, accessToken: user.accessToken });
+    res.status(201).json({ accessToken: user.accessToken });
   } catch (error) {
     res.status(400).json({ message: 'Could not create user', error });
   }
@@ -174,7 +174,7 @@ app.post('/sessions', async (req, res) => {
 
     if (user && bcrypt.compareSync(password, user.password)) {
       // if the user is found and the password matches, we respond with the user ID and their access token
-      res.status(201).json({ userId: user._id, accessToken: user.accessToken });
+      res.status(201).json({ accessToken: user.accessToken });
     } else {
       res.status(404).json({ notFound: true, message: 'Verify username and password is correct' });
     }
@@ -219,8 +219,7 @@ app.post('/entries', async (req,res) => {
   try {
     const savedDailyEntry = await dailyEntry.save();
 
-    // if saved successfully to the database, we send the whole daily entry back? Or what should we send back?
-    res.status(200).json(savedDailyEntry);
+    res.status(200).json({ message: "Daily entry saved successfully!" });
   } catch (error) {
     res.status(400).json({ message: "Could not save DailyEntry to the database", error });
   };
