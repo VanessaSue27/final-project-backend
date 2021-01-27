@@ -269,6 +269,21 @@ app.delete('/entries/:entryId', async (req, res) => {
   };
 });
 
+// EDIT ENTRY: Endpoint to edit a specific Daily Entry. It takes the entry ID from the entry the user
+// wants to update, included in the request URL
+// The PATCH request done in the Frontend must include in the body: dailyActivities, dailyWeight, dailyReflection
+app.patch('/entries/:entryId', authenticateUser);
+app.patch('/entries/:entryId', async (req, res) => {
+  const { dailyActivities, dailyWeight, dailyReflection } = req.body;
+
+  try { 
+    await DailyEntry.findOneAndUpdate({ _id: req.params.entryId }, { dailyActivities, dailyWeight, dailyReflection }, { new: true });
+    res.status(200).json({ success: "Entry updated!" });
+  } catch (error) {
+    res.status(500).json({ message:"Could not update entry" });
+  };
+});
+
 // Start the server
 app.listen(port, () => {
   console.log(`Server running on http://localhost:${port}`);
