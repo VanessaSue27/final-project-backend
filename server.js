@@ -5,6 +5,12 @@ import mongoose from 'mongoose';
 import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import listEndpoints from 'express-list-endpoints';
+import multer from 'multer';
+import cloudinary from 'cloudinary';
+import cloudinaryStorage from 'multer-storage-cloudinary';
+import dotenv from 'dotenv';
+
+dotenv.config();
 
 // Set up MongoDB
 const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/time-capsule';
@@ -91,6 +97,11 @@ const BabyProfile = mongoose.model('BabyProfile', {
     min: 10,
     max: 200,
     required: true
+  },
+  profileImage: {
+    imageName: {
+      type: String,
+    },
   }
 });
 
@@ -126,6 +137,25 @@ const app = express();
 // Add middlewares to enable cors and json body parsing
 app.use(cors());
 app.use(bodyParser.json());
+
+// Cloudinary to store images
+const cloud = cloudinary;
+cloud.config({
+  cloud_name: 'time-capsule',
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+const storage = cloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'profileImages',
+    allowedFormats: ['jpg', 'png', 'jpeg'],
+    transformation: [{ width: 100, height: 100, crop: 'limit' }]
+  }
+});
+
+const parser = multer({ storage })
 
 // Authenticator middleware to validate access to restricted endpoints
 const authenticateUser = async (req, res, next) => {
@@ -281,6 +311,18 @@ app.patch('/entries/:entryId', async (req, res) => {
     res.status(200).json({ success: "Entry updated!" });
   } catch (error) {
     res.status(500).json({ message:"Could not update entry" });
+  };
+});
+
+//ADD PROFILE PICTURE: Endpoint to add a profile picture to the baby profile. 
+app.post('/profile/image', authenticateUser);
+app.post('/profile/image', parser.single('image'), async(req, res) => {
+  const userId = req.user.id
+  try {
+    await User.findOneAndUpdate({ userId }, { profileImage: { imageName: req.file.filename , imageUrl: req.file.path }}, { new: true })
+      res.status(200).json({ success: "Profile picture added" })
+  } catch(error) {
+    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png or jpg is allowed.' })
   };
 });
 
