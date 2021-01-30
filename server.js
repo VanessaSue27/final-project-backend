@@ -6,7 +6,7 @@ import crypto from 'crypto';
 import bcrypt from 'bcrypt';
 import listEndpoints from 'express-list-endpoints';
 import multer from 'multer';
-import cloudinary from 'cloudinary';
+import cloudinaryFramework from 'cloudinary';
 import cloudinaryStorage from 'multer-storage-cloudinary';
 import dotenv from 'dotenv';
 
@@ -16,6 +16,33 @@ dotenv.config();
 const mongoUrl = process.env.MONGO_URL || 'mongodb://localhost/time-capsule';
 mongoose.connect(mongoUrl, { useNewUrlParser: true, useUnifiedTopology: true });
 mongoose.Promise = Promise;
+
+// Defines the port the app will run on
+const port = process.env.PORT || 8080;
+const app = express();
+
+// Add middlewares to enable cors and json body parsing
+app.use(cors());
+app.use(bodyParser.json());
+
+// Cloudinary to store images
+const cloudinary = cloudinaryFramework.v2;
+cloudinary.config({
+  cloud_name: 'time-capsule',
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET
+})
+
+const storage = cloudinaryStorage({
+  cloudinary,
+  params: {
+    folder: 'profileImages',
+    allowedFormats: ['jpg', 'png', 'jpeg'],
+    transformation: [{ width: 100, height: 100, crop: 'limit' }]
+  }
+});
+
+const parser = multer({ storage })
 
 // Using a userSchema in order to implement validation for the password before it is hashed
 const userSchema = new mongoose.Schema({
@@ -98,10 +125,9 @@ const BabyProfile = mongoose.model('BabyProfile', {
     max: 200,
     required: true
   },
-  profileImage: {
-    imageName: {
-      type: String,
-    },
+  profileImageUrl: {
+    type: String,
+    default: null
   }
 });
 
@@ -129,33 +155,6 @@ const DailyEntry = mongoose.model('DailyEntry', {
     maxLength: 300
   }
 });
-
-// Defines the port the app will run on
-const port = process.env.PORT || 8080;
-const app = express();
-
-// Add middlewares to enable cors and json body parsing
-app.use(cors());
-app.use(bodyParser.json());
-
-// Cloudinary to store images
-const cloud = cloudinary;
-cloud.config({
-  cloud_name: 'time-capsule',
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET
-})
-
-const storage = cloudinaryStorage({
-  cloudinary,
-  params: {
-    folder: 'profileImages',
-    allowedFormats: ['jpg', 'png', 'jpeg'],
-    transformation: [{ width: 100, height: 100, crop: 'limit' }]
-  }
-});
-
-const parser = multer({ storage })
 
 // Authenticator middleware to validate access to restricted endpoints
 const authenticateUser = async (req, res, next) => {
@@ -222,8 +221,9 @@ app.post('/profiles', authenticateUser);
 app.post('/profiles', async (req,res) => {
   const userId = req.user.id;
   const { babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length } = req.body;
+  const profileImageUrl = '';
 
-  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length });
+  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length, profileImageUrl });
 
   try {
     const savedBabyProfile = await babyProfile.save();
@@ -316,13 +316,13 @@ app.patch('/entries/:entryId', async (req, res) => {
 
 //ADD PROFILE PICTURE: Endpoint to add a profile picture to the baby profile. 
 app.post('/profile/image', authenticateUser);
-app.post('/profile/image', parser.single('image'), async(req, res) => {
-  const userId = req.user.id
+app.post('/profile/image', parser.single('image'), async (req, res) => {
+  const userId = req.user.id;
   try {
-    await User.findOneAndUpdate({ userId }, { profileImage: { imageName: req.file.filename , imageUrl: req.file.path }}, { new: true })
-      res.status(200).json({ success: "Profile picture added" })
+    await BabyProfile.findOneAndUpdate({ userId }, { profileImageUrl: req.file.path }, { new: true })
+      res.status(200).json({ success: "Profile picture added" }).end();
   } catch(error) {
-    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png or jpg is allowed.' })
+    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png or jpg is allowed.' }).end();
   };
 });
 
