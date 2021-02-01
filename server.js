@@ -322,7 +322,7 @@ app.post('/profile/image', parser.single('image'), async (req, res) => {
     await BabyProfile.findOneAndUpdate({ userId }, { profileImageUrl: req.file.path }, { new: true })
       res.status(200).json({ success: "Profile picture added" });
   } catch(error) {
-    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png or jpg is allowed.' });
+    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png, jpg or jpeg is allowed.' });
   };
 });
 
