@@ -37,6 +37,10 @@ The POST request done in the Frontend must include in the body: babyName, dateOf
 _Restricted endpoint_: Endpoint to create a new Daily Entry.
 The POST request done in the Frontend must include in the body: dailyActivities, dailyWeight and dailyReflection values.
 
+POST /profile/image
+_Restricted endpoint_: Endpoint to add a personalised profile picture.
+The POST request done in the Frontend must include multipart form data for image handling.
+
 # DELETE /entries/:entryId
 _Restricted endpoint_: Endpoint to delete a specific entry.
 It takes the ID from the entry the user wants to delete and removes it from the database.
@@ -44,3 +48,5 @@ It takes the ID from the entry the user wants to delete and removes it from the 
 # PATCH /entries/:entryId
 _Restricted endpoint_: Endpoint to edit a specific daily entry.
 It takes the entry ID from the entry the user wants to update, included in the request URL and updates it.
+
+
