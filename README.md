@@ -13,9 +13,10 @@ the ID of the user who authored this entry.
 
 We have implemented validation where possible on each of our models, in order to control that the data stored in our database is clean and proper ✨
 
-## See it in Action 💥
+## Frontend - See it in Action 💥
 
 You can find the Time Capsule Frontend repository here, where we have put this API to the test 💪: https://github.com/VanessaSue27/final-project-frontend
+
 And a deployed LIVE version of it here: https://time-capsule-final.netlify.app/
 
 ## CORE ROUTES - Documentation ⭐
