@@ -210,9 +210,8 @@ app.post('/profiles', authenticateUser);
 app.post('/profiles', async (req,res) => {
   const userId = req.user.id;
   const { babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length } = req.body;
-  const profileImageUrl = '';
 
-  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length, profileImageUrl });
+  const babyProfile = new BabyProfile({ userId, babyName, dateOfBirth, timeOfBirth, sex, gestationalAge, weight, length });
 
   try {
     const savedBabyProfile = await babyProfile.save();
