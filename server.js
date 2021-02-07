@@ -31,7 +31,7 @@ cloudinary.config({
   cloud_name: 'time-capsule',
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET
-})
+});
 
 const storage = cloudinaryStorage({
   cloudinary,
@@ -42,7 +42,7 @@ const storage = cloudinaryStorage({
   }
 });
 
-const parser = multer({ storage })
+const parser = multer({ storage });
 
 // Using a userSchema in order to implement validation for the password before it is hashed
 const userSchema = new mongoose.Schema({
@@ -216,9 +216,9 @@ app.post('/profiles', async (req,res) => {
 
   try {
     const savedBabyProfile = await babyProfile.save();
-    res.status(200).json({ message: "Baby profile saved successfully." });
+    res.status(200).json({ message: 'Baby profile saved successfully' });
   } catch (error) {
-    res.status(400).json({ message: "Could not save BabyProfile to the database", error });
+    res.status(400).json({ message: 'Could not save BabyProfile to the database', error });
   };
 });
 
@@ -234,9 +234,9 @@ app.post('/entries', async (req,res) => {
   try {
     const savedDailyEntry = await dailyEntry.save();
 
-    res.status(200).json({ message: "Daily entry saved successfully!" });
+    res.status(200).json({ message: 'Daily entry saved successfully!' });
   } catch (error) {
-    res.status(400).json({ message: "Could not save DailyEntry to the database", error });
+    res.status(400).json({ message: 'Could not save DailyEntry to the database', error });
   };
 });
 
@@ -272,9 +272,9 @@ app.delete('/entries/:entryId', authenticateUser);
 app.delete('/entries/:entryId', async (req, res) => {
   try { 
     await DailyEntry.deleteOne({ _id: req.params.entryId });
-    res.status(200).json({ success: "Entry deleted!" });
+    res.status(200).json({ success: 'Entry deleted!' });
   } catch (error) {
-    res.status(500).json({ message:"Could not delete entry" });
+    res.status(500).json({ message: 'Could not delete entry' });
   };
 });
 
@@ -285,9 +285,9 @@ app.patch('/entries/:entryId', async (req, res) => {
 
   try { 
     await DailyEntry.findOneAndUpdate({ _id: req.params.entryId }, { dailyActivities, dailyWeight, dailyReflection }, { new: true });
-    res.status(200).json({ success: "Entry updated!" });
+    res.status(200).json({ success: 'Entry updated!' });
   } catch (error) {
-    res.status(500).json({ message:"Could not update entry" });
+    res.status(500).json({ message: 'Could not update entry' });
   };
 });
 
@@ -297,9 +297,9 @@ app.post('/profile/image', parser.single('image'), async (req, res) => {
   const userId = req.user.id;
   try {
     await BabyProfile.findOneAndUpdate({ userId }, { profileImageUrl: req.file.path }, { new: true })
-      res.status(200).json({ success: "Profile picture added" });
+      res.status(200).json({ success: 'Profile picture added' });
   } catch(error) {
-    res.status(400).json({ message: 'Sorry, could not save your profile picture, check the format, only png, jpg or jpeg is allowed.' });
+    res.status(400).json({ message: 'Sorry, could not save profile picture, formats allowed: png, jpg or jpeg' });
   };
 });
 
