@@ -57,5 +57,6 @@ It takes the ID from the entry the user wants to delete and removes it from the 
 ### PATCH /entries/:entryId
 _Restricted endpoint_: Endpoint to edit a specific daily entry.
 It takes the entry ID from the entry the user wants to update, included in the request URL and updates it.
+The PATCH request done in the Frontend must include in the body: dailyActivities, dailyWeight, dailyReflection.
 
 
