@@ -5,7 +5,9 @@
 **Read more about Time Capsule here:** https://time-capsule-final.netlify.app/about
 
 For our _Time Capsule_ Backend we are working with a __RESTful API__ built with _Express_ on _Node.js_. We are storing our data in a Mongo Database structured with mongoose.
-Server deployed to _Heroku_ and _MongoDB_ stored in _Atlas_.
+~~Server deployed to _Heroku_~~ and _MongoDB_ stored in _Atlas_.
+
+**⚠ UPDATE:** Unfortunately, due to the removal of Heroku's free dynos, we had to shut this server down 💔 So the server is momentarily not deployed, and the app is only partially functional.
 
 We work with 3 main collections in our database: __User__, __BabyProfile__ and __DailyEntry__.
 We have connected the collections by creating a relation to the User model, so for example each DailyEntry entry includes an entryBy property, which lists
@@ -22,7 +24,7 @@ And a deployed LIVE version of it here: https://time-capsule-final.netlify.app/
 ## CORE ROUTES - Documentation ⭐
 _Restricted endpoints_ : These can only be accessed after the user has successfully signed up or logged in. In order for it to be validated, these endpoints expect the user's valid access token included in the POST request's authorization header.
 ### Base URL 👶
-https://time-capsule-final.herokuapp.com/
+~~https://time-capsule-final.herokuapp.com/~~
 ### GET /
 Home Page, shows a list of the endpoints.
 
